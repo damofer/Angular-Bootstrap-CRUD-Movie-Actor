@@ -1,0 +1,403 @@
+<!doctype html>
+<html ng-app>
+<head>
+  <title>Lista de Peliculas</title>
+  <meta charset="utf-8">
+
+
+
+
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+
+
+
+  <link rel="stylesheet" href="css/main.css">
+  <script src="lib/angular-1.0.1.js"></script>
+
+
+
+ <script src="app/main.js"></script>
+
+
+
+</head>
+<body>
+  <div class="container" ng-controller="MainController">
+   <div class="row">
+    <div class="page-header">
+      <div class="span9">
+
+
+
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#home">Peliculas</a></li>
+  <li><a data-toggle="tab" href="#menu1">Actores</a></li>
+
+</ul>
+</div>
+  </div>
+    </div>
+<div class="tab-content">
+<div id="home" class="tab-pane fade in active">
+
+
+
+<h1>Lista de Peliculas</h1>
+
+      <div class="span3">
+      <!-- Trigger the modal with a button -->
+<button type="button" class="btn btn-info " style="margin-right:3em;"data-toggle="modal" ng-click="applyChanges()" data-target="#EditPelicula">Agregar +</button>
+        <input type="search" ng-model="q" placeholder="Buscar por...">
+
+
+      </div>
+
+  <div class="row">
+    <table id="lista" class="table table-striped">
+      <thead>
+        <tr>
+
+          <th>Imagen</th>
+          <th>Titulo</th>
+          <th>Fecha de estreno</th>
+          <th>Calificacion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in itens | filter:q " >
+         <!--  <td><input type="checkbox" ng-model="item.comprado"></td> -->
+         <td ng-click="lookItem(item)" data-toggle="modal" data-target="#DetallePelicula"> <img height="80" width="120"src="{{item.imgurl}}"></td>
+          <td >{{ item.titulo }}</td>
+          <td>{{ item.ano }}</td>
+          <td>{{ item.calificacion }}</td>
+ <td>
+            <button class="btn btn-warning btn-small" ng-click="editarItem(item)" data-toggle="modal" data-target="#EditPelicula">
+              <i class="icon-pencil icon-white"></i> editar
+            </button>
+            <button class="btn btn-danger btn-small" ng-click="deleteItem(item)" >
+              <i class="icon-trash icon-white"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+
+
+  <div id="menu1" class="tab-pane fade">
+
+
+
+<h1>Lista de Actores</h1>
+
+      <div class="span3">
+
+       <!-- Trigger the modal with a button -->
+<button type="button" class="btn btn-info"style="margin-right:3em;" data-toggle="modal" ng-click="applyChanges()" data-target="#EditActor">Agregar +</button>
+        <input type="search" ng-model="search" placeholder="Buscar por...">
+      </div>
+
+  <div class="row">
+    <table id="lista" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+           <th>Genero</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="actor in actores | filter:search" class="comprado-{{ item.comprado }}">
+         <!--  <td><input type="checkbox" ng-model="item.comprado"></td> -->
+          <td ng-click="lookActor(actor)" data-toggle="modal" data-target="#DetalleActor">{{ actor.nombre }}</td>
+          <td>{{ actor.genero }}</td>
+
+          <td>
+            <button class="btn btn-warning btn-small" ng-click="editarActor(actor)" data-toggle="modal" data-target="#EditActor">
+              <i class="icon-pencil icon-white"></i> editar
+            </button>
+            <button class="btn btn-danger btn-small" ng-click="deleteActor(actor)" >
+              <i class="icon-trash icon-white"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+</div>
+
+
+
+
+  </div>
+
+
+
+<!-- TABLA MODAL DE EDICION DE LA PELICULA -->
+<!-- Modal -->
+<div id="EditPelicula" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+            <div class="modal-content">
+                          <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Gestionar Pelcula</h4>
+                          </div>
+                           <div class="modal-body">
+                             <div class="row form-inline">
+
+
+
+
+
+                                <input type="text" ng-model="item.titulo" placeholder="Titulo">
+                                 <input type="number" ng-model="item.ano" placeholder="Año" class="input-small">
+                                <input type="number" ng-model="item.calificacion" placeholder="Calificacion" class="input-small">
+                                <input type="text" ng-model="item.director" placeholder="Director">
+                                 <input type="number" ng-model="item.ganancias" placeholder="Ganancias en Millones">
+                                 <input type="genero" ng-model="item.genero" placeholder="Genero">
+
+
+
+
+                                 <input type="text" ng-model="item.imgurl" placeholder="URL de la imagen">
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+
+                        <button ng-hide="edit" class="btn btn-success" ng-click="adicionaItem()" data-dismiss="modal">
+                                  <i class="icon-plus icon-white"></i> adicionar
+                                </button>
+
+                                <button ng-show="edit" class="btn btn-success" ng-click="applyChanges()" data-dismiss="modal">
+                                  <i class="icon-ok icon-white"></i> salvar
+                                </button>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+            </div>
+
+  </div>
+</div>
+
+<!-- TABLA MODAL DE EDICION DEL ACTOR -->
+<div id="EditActor" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+            <div class="modal-content">
+                          <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Gestionar Actor</h4>
+                          </div>
+                           <div class="modal-body">
+                             <div class="row form-inline">
+
+
+                                <input type="text" ng-model="actor.nombre" placeholder="Nombre">
+                                 <input type="date" ng-model="actor.fechaNac" placeholder=" Fecha de Nacimiento" class="input-small">
+                                <input type="text" ng-model="actor.genero" placeholder="Genero" class="input-small">
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                         <button ng-hide="edit" class="btn btn-success" ng-click="adicionaActor()" data-dismiss="modal">
+                                  <i class="icon-plus icon-white"></i> adicionar
+                                </button>
+
+                                <button ng-show="edit" class="btn btn-success" ng-click="applyChanges()" data-dismiss="modal">
+                                  <i class="icon-ok icon-white"></i> salvar
+                                </button>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+            </div>
+
+  </div>
+</div>
+
+
+
+
+
+<!-- TABLA MODAL DE DETALLE DE LA PELICULA -->
+            <div id="DetallePelicula" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h3 class="modal-title">Detalles</h3>
+                              </div>
+                              <div class="modal-body">
+
+                        <table id="Detalles" class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Titulo</th>
+                                  <th>Fecha de estreno</th>
+                                  <th>Calificacion</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+
+                                  <td>{{ item.titulo }}</td>
+                                  <td>{{ item.ano }}</td>
+                                  <td>{{ item.calificacion }}</td>
+
+                                </tr>
+                                 <tr>
+                                  <th>Ganancias</th>
+                                  <th>Director</th>
+                                  <th>Genero</th>
+
+                                </tr
+
+                                <tr>
+
+                                  <td>{{ item.ganancias }}</td>
+                                  <td>{{ item.director }}</td>
+                                  <td>{{ item.genero }}</td>
+
+
+                                </tr>
+                                <tr>
+                                  <img height="160" width="240"src="{{item.imgurl}}">
+
+                                </tr>
+
+
+                              </tbody>
+
+
+                              </table>
+                              <table>
+                              <tbody>
+                              <th><h4>Elenco:</h4></th>
+                        <tr ng-repeat ="actor in item.elenco">
+                        <th>
+
+                         {{actor.nombre}}
+
+                               <!-- <a ng-click="lookActor(actor.nombre)" data-toggle="modal"  data-dismiss="modal" data-target="#DetalleActor">
+
+                               {{actor.nombre}}
+
+                               </a> -->
+
+                                </th>
+                                </tr>
+                            <th><h4>Peliculas relacionadas:</h4></th>
+                                <tr ng-repeat ="related in itens | filter:item.genero">
+                        <th>
+
+                               <a ng-click="lookItem(related)" data-toggle="modal">
+
+
+                               {{related.titulo}}
+
+
+                               </a>
+
+
+                                </th>
+                                </tr>
+                                 <input type="text" ng-model="item.elenco.nombre" placeholder="Agregar Actor">
+                                  <button  class="btn btn-success" ng-click="agregarElenco()" >
+                              <i class="icon-ok icon-white"></i> salvar
+                            </button>
+                            </tbody>
+                            </table>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+
+                          </div>
+            </div>
+
+
+
+<!-- TABLA MODAL DE DETALLE DEL ACTOR -->
+            <div id="DetalleActor" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="modal-title">Detalles</h3>
+      </div>
+      <div class="modal-body">
+
+    <table id="Detalles" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Genero</th>
+          <th>Fecha de Nacimiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+         <!--  <td><input type="checkbox" ng-model="item.comprado"></td> -->
+          <td>{{ actor.nombre }}</td>
+          <td>{{ actor.genero }}</td>
+          <td>{{ actor.fechaNac }}</td>
+
+        </tr>
+         <tr>
+         <!--  <td><input type="checkbox" ng-model="item.comprado"></td> -->
+
+
+      </tbody>
+      </table>
+      <table>
+      <tbody>
+      <th><h4>Peliculas:</h4></th>
+
+
+              <tr ng-repeat ="pelicula in itens | filter:actor.nombre" >
+                  <th>
+                  <a ng-click="lookItem(pelicula)" data-toggle="modal" data-target="#DetallePelicula" data-dismiss="modal">{{pelicula.titulo}}</a>
+
+                  </th>
+            </tr>
+         <!-- <input type="text" ng-model="item.elenco.nombre" placeholder="Agregar Actor">
+          <button  class="btn btn-success" ng-click="agregarActor()" >
+               <i class="icon-ok icon-white"></i> salvar
+          </button> -->
+    </tbody>
+    </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</body>
+</html>
